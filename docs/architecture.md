@@ -20,11 +20,11 @@ This helps keep the code clean and avoids mixing logic that should stay separate
 The system follows a simple flow from bottom to top:
 
     Application Logic
-    ↓
+          ↓
     Protocol Rules
-    ↓
+          ↓
     Message Framing
-    ↓
+          ↓
     TCP Network
 
 

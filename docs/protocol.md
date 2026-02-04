@@ -28,13 +28,13 @@ Only a client with the correct session key can send valid data.
 
 ## 3. Terminology
 
-    | Term | Meaning |
-    |------|---------|
-    | Ticket | Server-created ID for a session |
-    | Session Key | Secret key for MAC generation |
-    | Nonce | Random number for freshness |
-    | Sequence Number | Counter for message order |
-    | MAC | Proof that message is real |
+    | Term            | Meaning                         |
+    |-----------------|---------------------------------|
+    | Ticket          | Server-created ID for a session |
+    | Session Key     | Secret key for MAC generation   |
+    | Nonce           | Random number for freshness     |
+    | Sequence Number | Counter for message order       |
+    | MAC             | Proof that message is real      |
 
 ---
 
@@ -131,7 +131,7 @@ mac = HMAC(session_key, seq + payload)
 
 ## 7. Session States
 
-START → PENDING → ACTIVE → EXPIRED
+    START → PENDING → ACTIVE → EXPIRED
 
 
 ### Rules
@@ -151,24 +151,24 @@ START → PENDING → ACTIVE → EXPIRED
 
 ## 9. Error Handling
 
-    | Problem | Server Action |
-    |---------|---------------|
-    | Bad MAC | Ignore message |
-    | Expired ticket | Reject |
-    | Wrong proof | Reject |
-    | Bad format | Disconnect |
+    | Problem        | Server Action  |
+    |----------------|----------------|
+    | Bad MAC        | Ignore message |
+    | Expired ticket | Reject         |
+    | Wrong proof    | Reject         |
+    | Bad format     | Disconnect     |
 
 ---
 
 ## 10. Security Features
 
-    | Feature | How It Works |
-    |---------|--------------|
-    | Replay Protection | Sequence numbers |
-    | Authenticity | HMAC |
-    | Freshness | Nonces |
-    | Session Binding | Ticket + IP |
-    | Tamper Detection | MAC |
+    | Feature             | How It Works     |
+    |---------------------|------------------|
+    | Replay Protection   | Sequence numbers |
+    | Authenticity        | HMAC             |
+    | Freshness           | Nonces           |       
+    | Session Binding     | Ticket + IP      |
+    | Tamper Detection    | MAC              |
 
 ---
 
