@@ -129,67 +129,45 @@ The server ignores it.
 You should see the server printing messages sent by the client after the handshake finishes.
 
 ## Testing Ideas
-### Replay Test
 
+### Replay Test
 Try sending the same data packet twice.
 The server should accept the first and ignore the second.
-### Tamper Test
 
+### Tamper Test
 Change the message after the MAC is created.
 The server should reject it.
-### Load Test
 
+### Load Test
 Run multiple clients at once and see if the server stays responsive.
+
 ## Why I Designed It This Way
 - Tickets Instead of Simple Tokens
-
 - A ticket alone isn’t enough.
 - The client must also prove it owns the session key.
+  
 ### Nonces
-
 They make every session unique and hard to predict.
-### Sequence Numbers
 
+### Sequence Numbers
 They give the server “memory” of what it has already seen.
 
 ## Limitations
 
 - Messages are not encrypted unless TLS is added
-
 - No forward secrecy
-
 - One main server secret
-
 - No login or user accounts
 
 ## What I’d Improve Next
 
 - Add TLS for encrypted traffic
-
 - Use ECDH for forward secrecy
-
 - Store sessions in Redis
-
 - Add logs and basic monitoring
-
 - Add protocol versioning
 
-## What This Helped Me Learn
-
-- How protocols use state, not just crypto
-
-- How replay attacks actually work
-
-- Why message order matters
-
-- How servers track sessions
-
-- How security is built into system design
-
-## Final Note
-
-This project isn’t meant to replace real security software.
-It’s a learning system that shows how authentication, freshness, and trust can be built into a simple network protocol.
 ## License
+
 
 MIT License
