@@ -16,14 +16,6 @@ It runs on top of TCP and uses:
     ├── README.md
     ├── LICENSE
     ├── requirements.txt
-    ├── docs/
-    │ ├── protocol.md
-    │ ├── threat-model.md
-    │ ├── architecture.md
-    │ └── diagrams/
-    │ ├── sequence.png
-    │ ├── state-machine.png
-    │ └── data-flow.png
     ├── src/
     │ ├── common/
     │ │ ├── crypto.py
