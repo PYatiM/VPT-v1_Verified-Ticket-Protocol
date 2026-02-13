@@ -9,23 +9,6 @@ It runs on top of TCP and uses:
 - Sequence numbers  
 - HMAC-SHA256  
 
-The main idea is simple:  
-**If you don’t have the session key, you can’t send valid messages.**
-
----
-
-## What This Project Is About
-
-Most networking projects just “send data.”  
-This one focuses on **how systems decide whether data should be trusted**.
-
-VTP/1 shows:
-- How a server remembers past messages
-- How a client proves it owns a secret
-- How message order is enforced
-- How fake or replayed packets get rejected
-
----
 
 ## Folder Layout
 
@@ -62,7 +45,6 @@ VTP/1 shows:
     └── simple_server.py
 
 
----
 
 ## How the Protocol Works (Simple View)
 
@@ -79,7 +61,6 @@ If a message is:
 
 The server ignores it.
 
----
 
 ## Message Flow
 
@@ -91,7 +72,6 @@ The server ignores it.
     Client → Server: DATA (seq, mac)
 
 
----
 
 ## Security Ideas Used
 
@@ -107,7 +87,6 @@ The server ignores it.
 - **MAC (HMAC)**  
   Detect message changes
 
----
 
 ## Running the Project
 
@@ -128,29 +107,6 @@ The server ignores it.
 
 You should see the server printing messages sent by the client after the handshake finishes.
 
-## Testing Ideas
-
-### Replay Test
-Try sending the same data packet twice.
-The server should accept the first and ignore the second.
-
-### Tamper Test
-Change the message after the MAC is created.
-The server should reject it.
-
-### Load Test
-Run multiple clients at once and see if the server stays responsive.
-
-## Why I Designed It This Way
-- Tickets Instead of Simple Tokens
-- A ticket alone isn’t enough.
-- The client must also prove it owns the session key.
-  
-### Nonces
-They make every session unique and hard to predict.
-
-### Sequence Numbers
-They give the server “memory” of what it has already seen.
 
 ## Limitations
 
