@@ -3,7 +3,7 @@ import hmac
 
 from common.crypto import hmac_sha256, rand_hex
 from common.config import SERVER_SECRET, HANDSHAKE_TTL, SESSION_TTL
-
+ 
 class ProtocolHandlers:
     def __init__(self, store):
         self.store = store
