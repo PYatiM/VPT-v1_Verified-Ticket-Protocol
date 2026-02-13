@@ -5,8 +5,8 @@ import time
 
 sys.path.append(os.path.abspath("src"))
 
-from client.client import VTPClient
-
+from client.client import VTPClient 
+ 
 CLIENTS = 25
 
 async def spawn_client(i):

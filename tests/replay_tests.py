@@ -2,7 +2,7 @@ import asyncio
 import sys
 import os
 
-sys.path.append(os.path.abspath("src"))
+sys.path.append(os.path.abspath("src")) 
 
 from client.client import VTPClient
 from common.crypto import hmac_sha256
