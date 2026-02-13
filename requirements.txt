@@ -1,0 +1,9 @@
+asyncio
+json
+hmac
+hashlib
+secrets
+time
+requests
+websocket-client
+python-dotenv
