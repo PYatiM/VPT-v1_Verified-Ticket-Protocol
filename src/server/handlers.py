@@ -3,7 +3,7 @@ import hmac
 
 from .exceptions import VTPProtocolError
 from common.crypto import hmac_sha256, rand_hex
-from common.config import SERVER_SECRET, HANDSHAKE_TTL, SESSION_TTL
+from common.config import MAX_SEQ, SERVER_SECRET, HANDSHAKE_TTL, SESSION_TTL
 
 SCHEMAS = {
     "hello": {"V", "type", "client_nonce"},
@@ -97,6 +97,9 @@ class ProtocolHandlers:
         mac = msg["mac"]
 
         session = self.store.get_active(ticket)
+        if not isinstance(seq, int) or seq <= 0 or seq > MAX_SEQ:
+            return None
+
         if not session:
             return None
 

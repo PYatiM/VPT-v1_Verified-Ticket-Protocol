@@ -1,5 +1,6 @@
 import os
 
+MAX_SEQ = 2**32 - 1
 TRUSTED_PROXY = os.environ.get("VTP_TRUSTED_PROXY")
 _raw = os.environ.get("VTP_SERVER_SECRET")
 if not _raw:
