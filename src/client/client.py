@@ -3,7 +3,7 @@ import hmac
 
 from common.crypto import hmac_sha256, rand_hex
 from common.framing import send_msg, recv_msg
-from common.config import SERVER_SECRET
+from common.config import MAX_SEQ, SERVER_SECRET
 
 class VTPClient:
     def __init__(self, host="127.0.0.1", port=9000):
@@ -29,8 +29,8 @@ class VTPClient:
         ticket = ticket_msg["ticket"]
 
         session_key = hmac_sha256(
-            SERVER_SECRET,
-            f"{ticket}{client_nonce}{server_nonce}".encode()
+            ticket.encode(),
+            f"{client_nonce}{server_nonce}".encode()
         ).encode()
 
         proof = hmac_sha256(session_key, b"ACTIVATE")
@@ -59,6 +59,9 @@ class VTPClient:
                 "payload": msg,
                 "mac": mac
             })
+        if self.seq >= MAX_SEQ:
+            raise VTPProtocolError("Sequence number exhausted; re-handshake required")
+
 
         writer.close()
         await writer.wait_closed()
