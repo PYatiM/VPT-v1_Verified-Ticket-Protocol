@@ -18,23 +18,23 @@ class SessionStore:
             self.pending[ticket] = data
         return True
 
-    def get_pending(self, ticket):
+    async def get_pending(self, ticket):
         async with self._lock:
             return self.pending.get(ticket)
 
-    def activate(self, ticket, session):
+    async def activate(self, ticket, session):
         self.pending.pop(ticket, None)
         self.active[ticket] = session
 
-    def get_active(self, ticket):
+    async def get_active(self, ticket):
         async with self._lock:
             return self.active.get(ticket)
 
-    def invalidate(self, ticket):
+    async def invalidate(self, ticket):
         self.pending.pop(ticket, None)
         self.active.pop(ticket, None)
 
-    def cleanup(self):
+    async def cleanup(self):
         now = time.time()
 
         for t in list(self.pending.keys()):

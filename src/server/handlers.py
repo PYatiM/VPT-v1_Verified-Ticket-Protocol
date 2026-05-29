@@ -109,16 +109,17 @@ class ProtocolHandlers:
         if session["ip"] != ip:
             return None
 
-        if seq <= session["last_seq"]:
-            return None
+        async with self._lock:
+            if seq <= session["last_seq"]:
+                return None
 
-        expected = hmac_sha256(
-            session["session_key"],
-            f"{seq}{payload}".encode()
-        )
+            expected = hmac_sha256(
+                session["session_key"],
+                f"{seq}{payload}".encode()
+            )
 
-        if not hmac.compare_digest(expected, mac):
-            return None
+            if not hmac.compare_digest(expected, mac):
+                return None
 
-        session["last_seq"] = seq
+            session["last_seq"] = seq
         return payload
