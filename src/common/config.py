@@ -1,5 +1,8 @@
-SERVER_SECRET = b"b32Fb79f8gyda8gbnd2689"
-PROTOCOL_VERSION = 1
+import os
 
-HANDSHAKE_TTL = 30
-SESSION_TTL = 600
+_raw = os.environ.get("VTP_SERVER_SECRET")
+if not _raw:
+    raise RuntimeError("VTP_SERVER_SECRET is not set"
+                     "Generate one: python -c \"import secrets; print(secrets.token_hex(32))\""
+                    )
+SECRET_KEY = _raw.encode()
