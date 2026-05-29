@@ -1,7 +1,7 @@
 import asyncio
 from logging import logger
 
-from common.framing import recv_msg, send_msg
+from common.framing import VTPProtocolError, recv_msg, send_msg
 from server.session_store import SessionStore
 from server.handlers import ProtocolHandlers
  

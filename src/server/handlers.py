@@ -1,9 +1,27 @@
 import time
 import hmac
 
+from .exceptions import VTPProtocolError
 from common.crypto import hmac_sha256, rand_hex
 from common.config import SERVER_SECRET, HANDSHAKE_TTL, SESSION_TTL
- 
+
+SCHEMAS = {
+    "hello": {"V", "type", "client_nonce"},
+    "activate": {"V", "type", "ticket", "proof"},
+    "data": {"V", "type", "ticket", "seq", "payload", "mac"},
+    }
+
+def validate(msg:dict) -> None:
+    t = msg.get("type")
+    if t not in SCHEMAS:
+        raise VTPProtocolError(f"Invalid message type: {t!r}")
+    missing = SCHEMAS[t] - msg.keys()
+    if missing:
+        raise VTPProtocolError(f"Missing fields for {t} : {missing!r}")
+    if msg["V"] != 1:
+        raise VTPProtocolError(f"Unsupported protocol version: {msg.get('V')!r}")
+
+
 class ProtocolHandlers:
     def __init__(self, store):
         self.store = store
