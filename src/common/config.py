@@ -1,5 +1,6 @@
 import os
 
+TRUSTED_PROXY = os.environ.get("VTP_TRUSTED_PROXY")
 _raw = os.environ.get("VTP_SERVER_SECRET")
 if not _raw:
     raise RuntimeError("VTP_SERVER_SECRET is not set"
