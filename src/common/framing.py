@@ -6,15 +6,17 @@ MAX_MESSAGE_SIZE = 1024 * 1024  # 1 MB safety cap
 READ_TIMEOUT = 10.0
 
 async def send_msg(writer, msg):
-    data = json.dumps(msg).encode("utf-8")
-    length = len(data)
+    data = json.dumps(msg, seperators=(",",":")).encode("utf-8")
+    
+    if len(data) > MAX_MESSAGE_SIZE:
+        raise VTPProtocolErrorError("Outgoing Message too large")
 
-    if length > MAX_MESSAGE_SIZE:
-        raise ValueError("Message too large")
-
-    writer.write(struct.pack(">I", length))
+    writer.write(struct.pack(">I", len(data)))
     writer.write(data)
-    await writer.drain()
+    try:
+        await asyncio.wait_for(writer.drain(), timeout=10.0)
+    except asyncio.TimeoutError:
+        raise VTPProtocolError("write timeout - client not reading")
 
 async def recv_msg(reader: asyncio.StreamReader) -> dict:
     try:
