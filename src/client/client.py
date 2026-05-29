@@ -29,8 +29,8 @@ class VTPClient:
         ticket = ticket_msg["ticket"]
 
         session_key = hmac_sha256(
-            SERVER_SECRET,
-            f"{ticket}{client_nonce}{server_nonce}".encode()
+            ticket.encode(),
+            f"{client_nonce}{server_nonce}".encode()
         ).encode()
 
         proof = hmac_sha256(session_key, b"ACTIVATE")
