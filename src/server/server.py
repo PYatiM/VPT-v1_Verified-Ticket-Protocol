@@ -48,6 +48,11 @@ class VTPServer:
         writer.close()
         await writer.wait_closed()
 
+    async def cleanup_loop(self):
+        while True:
+            await asyncio.sleep(60)
+            self.store.cleanup()
+
     async def start(self):
         server = await asyncio.start_server(
             self.handle_client,
@@ -59,3 +64,5 @@ class VTPServer:
 
         async with server:
             await server.serve_forever()
+
+        asyncio.create_task(self.store.cleanup_loop())
