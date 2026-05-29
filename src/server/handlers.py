@@ -100,6 +100,10 @@ class ProtocolHandlers:
         if not session:
             return None
 
+        if time.time() > session["expires"]:
+            self.store.invalidate(ticket)
+            return None
+
         if session["ip"] != ip:
             return None
 
