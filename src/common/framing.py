@@ -6,7 +6,7 @@ MAX_MESSAGE_SIZE = 1024 * 1024  # 1 MB safety cap
 READ_TIMEOUT = 10.0
 
 async def send_msg(writer, msg):
-    data = json.dumps(msg, seperators=(",",":")).encode("utf-8")
+    data = json.dumps(msg, sort_keys=True, seperators=(",",":")).encode("utf-8")
     
     if len(data) > MAX_MESSAGE_SIZE:
         raise VTPProtocolErrorError("Outgoing Message too large")
