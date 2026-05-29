@@ -1,12 +1,19 @@
 import time
- 
+
+MAX_PENDING_PER_IP = 5
+
 class SessionStore:
     def __init__(self):
         self.pending = {}
         self.active = {}
 
-    def create_pending(self, ticket, data):
+    def create_pending(self, ticket: str, data: dict) -> bool:
+        ip = data["ip"]
+        current = sum(1 for v in self.pending.values() if v["ip"] == ip)
+        if current >= MAX_PENDING_PER_IP:
+            return False  
         self.pending[ticket] = data
+        return True
 
     def get_pending(self, ticket):
         return self.pending.get(ticket)
