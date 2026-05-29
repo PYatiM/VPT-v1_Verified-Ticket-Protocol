@@ -1,4 +1,5 @@
 import asyncio
+from logging import logger
 
 from common.framing import recv_msg, send_msg
 from server.session_store import SessionStore
@@ -36,6 +37,13 @@ class VTPServer:
                 self.store.cleanup()
         except:
             pass
+        except VTPProtocolError as e:
+            logger.warning(f"Protocol error from {ip}: {e}")
+        except Exception as e:
+            logger.exception(f"Unexpected error from {ip}")
+        finally:
+            writer.close()
+            await writer.wait_closed()
 
         writer.close()
         await writer.wait_closed()
