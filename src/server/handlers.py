@@ -2,7 +2,7 @@ import time
 import hmac
 
 from .exceptions import VTPProtocolError
-from common.crypto import hmac_sha256, rand_hex
+from common.crypto import hmac_sha256, rand_hex,TICKET_KEY, SESSION_KEY
 from common.config import MAX_SEQ, SERVER_SECRET, HANDSHAKE_TTL, SESSION_TTL
 
 SCHEMAS = {
@@ -31,7 +31,7 @@ class ProtocolHandlers:
         expires = time.time() + HANDSHAKE_TTL
 
         ticket = hmac_sha256(
-            SERVER_SECRET,
+            TICKET_KEY,
             f"{client_nonce}{server_nonce}{ip}{expires}".encode()
         )
 
@@ -68,7 +68,7 @@ class ProtocolHandlers:
             return
 
         key = hmac_sha256(
-            SERVER_SECRET,
+            SESSION_KEY,
             f"{ticket}{pending['client_nonce']}{pending['server_nonce']}".encode()
         ).encode()
 
