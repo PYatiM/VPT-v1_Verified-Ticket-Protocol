@@ -4,6 +4,7 @@ from logging import logger
 from common.framing import VTPProtocolError, recv_msg, send_msg
 from server.session_store import SessionStore
 from server.handlers import ProtocolHandlers
+from server.rate_limiter import TokenBucket
  
 class VTPServer:
     def __init__(self, host="127.0.0.1", port=9000):
@@ -11,6 +12,7 @@ class VTPServer:
         self.port = port
         self.store = SessionStore()
         self.handlers = ProtocolHandlers(self.store)
+        self.rate_limiter = TokenBucket(rate=5, burst=10)
 
     async def handle_client(self, reader, writer):
         ip = writer.get_extra_info("peername")[0]
@@ -24,6 +26,10 @@ class VTPServer:
                 t = msg.get("type")
 
                 if t == "hello":
+                    if not self.rate_limiter.allow(ip):
+                        print(f"[{ip}] rate limit exceeded — closing connection")
+                        writer.close()
+                        return
                     await self.handlers.handle_hello(msg, ip, send)
 
                 elif t == "activate":

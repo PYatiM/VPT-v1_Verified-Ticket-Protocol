@@ -21,7 +21,6 @@ def validate(msg:dict) -> None:
     if msg["V"] != 1:
         raise VTPProtocolError(f"Unsupported protocol version: {msg.get('V')!r}")
 
-
 class ProtocolHandlers:
     def __init__(self, store):
         self.store = store
