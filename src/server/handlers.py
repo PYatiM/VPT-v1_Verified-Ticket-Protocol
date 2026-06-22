@@ -1,7 +1,7 @@
 import time
 import hmac
 
-from .exceptions import VTPProtocolError
+from common.framing import VTPProtocolError
 from common.crypto import hmac_sha256, rand_hex,TICKET_KEY, SESSION_KEY
 from common.config import MAX_SEQ, SERVER_SECRET, HANDSHAKE_TTL, SESSION_TTL
 
