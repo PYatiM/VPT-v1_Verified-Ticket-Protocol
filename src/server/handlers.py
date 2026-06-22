@@ -35,7 +35,7 @@ class ProtocolHandlers:
             f"{client_nonce}{server_nonce}{ip}{expires}".encode()
         )
 
-        self.store.create_pending(ticket, {
+        await self.store.create_pending(ticket, {
             "client_nonce": client_nonce,
             "server_nonce": server_nonce,
             "ip": ip,
