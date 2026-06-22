@@ -1,7 +1,7 @@
 import time
 import hmac
 
-from .exceptions import VTPProtocolError
+from common.framing import VTPProtocolError
 from common.crypto import hmac_sha256, rand_hex,TICKET_KEY, SESSION_KEY
 from common.config import MAX_SEQ, SERVER_SECRET, HANDSHAKE_TTL, SESSION_TTL
 
@@ -35,7 +35,7 @@ class ProtocolHandlers:
             f"{client_nonce}{server_nonce}{ip}{expires}".encode()
         )
 
-        self.store.create_pending(ticket, {
+        await self.store.create_pending(ticket, {
             "client_nonce": client_nonce,
             "server_nonce": server_nonce,
             "ip": ip,
@@ -109,17 +109,16 @@ class ProtocolHandlers:
         if session["ip"] != ip:
             return None
 
-        async with self._lock:
-            if seq <= session["last_seq"]:
-                return None
+        if seq <= session["last_seq"]:
+            return None
 
-            expected = hmac_sha256(
-                session["session_key"],
-                f"{seq}{payload}".encode()
-            )
+        expected = hmac_sha256(
+            session["session_key"],
+            f"{seq}{payload}".encode()
+        )
 
-            if not hmac.compare_digest(expected, mac):
-                return None
+        if not hmac.compare_digest(expected, mac):
+            return None
 
-            session["last_seq"] = seq
+        session["last_seq"] = seq
         return payload

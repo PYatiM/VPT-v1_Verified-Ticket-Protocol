@@ -57,7 +57,7 @@ class VTPServer:
     async def cleanup_loop(self):
         while True:
             await asyncio.sleep(60)
-            self.store.cleanup()
+            await self.store.cleanup()
 
     async def start(self):
         server = await asyncio.start_server(

@@ -9,7 +9,7 @@ async def send_msg(writer, msg):
     data = json.dumps(msg, sort_keys=True, seperators=(",",":")).encode("utf-8")
     
     if len(data) > MAX_MESSAGE_SIZE:
-        raise VTPProtocolErrorError("Outgoing Message too large")
+        raise VTPProtocolError("Outgoing Message too large")
 
     writer.write(struct.pack(">I", len(data)))
     writer.write(data)

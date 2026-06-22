@@ -9,7 +9,7 @@ class SessionStore:
         self.active: dict = {}
         self._lock = asyncio.Lock()
 
-    def create_pending(self, ticket: str, data: dict) -> bool:
+    async def create_pending(self, ticket: str, data: dict) -> bool:
         ip = data["ip"]
         current = sum(1 for v in self.pending.values() if v["ip"] == ip)
         if current >= MAX_PENDING_PER_IP:
