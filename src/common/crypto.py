@@ -3,6 +3,20 @@ import hashlib
 import secrets
 import struct
 import hashlib, hmac as _hmac
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives import serialization
+
+def generate_ecdh_keypair():
+    private_key = ec.generate_private_key(ec.SECP256R1())
+    public_key = private_key.public_key().public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
+    )
+    return private_key, public_key
+
+def derive_shared_secret(private_key, peer_public_bytes):
+    peer_public_key = serialization.load_pem_public_key(peer_public_bytes)
+    return private_key.exchange(ec.ECDH(), peer_public_key)
 
 def derive_key(master: bytes, purpose: str) -> bytes:
     prk = _hmac.new(b"vtp-v1-salt", master, hashlib.sha256).digest()
