@@ -3,7 +3,7 @@ import logging
 import ssl
 
 from common.framing import VTPProtocolError, recv_msg, send_msg
-from server.session_store import SessionStore
+from server.redis_store import RedisSessionStore
 from server.handlers import ProtocolHandlers
 from server.rate_limiter import TokenBucket
 
@@ -14,7 +14,7 @@ class VTPServer:
     def __init__(self, host="127.0.0.1", port=9000):
         self.host = host
         self.port = port
-        self.store = SessionStore()
+        self.store = RedisSessionStore()
         self.handlers = ProtocolHandlers(self.store)
         self.rate_limiter = TokenBucket(rate=5, burst=10)
 
