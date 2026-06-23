@@ -1,5 +1,6 @@
 import asyncio
 import hmac
+import ssl
 
 from common.crypto import hmac_sha256, rand_hex
 from common.framing import send_msg, recv_msg
@@ -12,7 +13,10 @@ class VTPClient:
         self.seq = 0
 
     async def run(self):
-        reader, writer = await asyncio.open_connection(self.host, self.port)
+        ssl_context = ssl.create_default_context()
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+        reader, writer = await asyncio.open_connection(self.host, self.port, ssl=ssl_context)
 
         client_nonce = rand_hex(8)
 

@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import ssl
 
 from common.framing import VTPProtocolError, recv_msg, send_msg
 from server.session_store import SessionStore
@@ -63,10 +64,13 @@ class VTPServer:
             await self.store.cleanup()
 
     async def start(self):
+        ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        ssl_context.load_cert_chain(certfile="server.crt", keyfile="server.key")
         server = await asyncio.start_server(
             self.handle_client,
             self.host,
-            self.port
+            self.port,
+            ssl=ssl_context
         )
 
         logger.info(f"VTP Server running on {self.host}:{self.port}")
