@@ -1,11 +1,15 @@
 import asyncio
-from logging import logger
+import logging
+import ssl
 
 from common.framing import VTPProtocolError, recv_msg, send_msg
 from server.session_store import SessionStore
 from server.handlers import ProtocolHandlers
 from server.rate_limiter import TokenBucket
- 
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logger = logging.getLogger("VTPServer")
+
 class VTPServer:
     def __init__(self, host="127.0.0.1", port=9000):
         self.host = host
@@ -27,7 +31,7 @@ class VTPServer:
 
                 if t == "hello":
                     if not self.rate_limiter.allow(ip):
-                        print(f"[{ip}] rate limit exceeded — closing connection")
+                        logger.info(f"[{ip}] rate limit exceeded — closing connection")
                         writer.close()
                         return
                     await self.handlers.handle_hello(msg, ip, send)
@@ -38,7 +42,7 @@ class VTPServer:
                 elif t == "data":
                     payload = await self.handlers.handle_data(msg, ip)
                     if payload:
-                        print(f"[{ip}] {payload}")
+                        logger.info(f"[{ip}] {payload}")
 
                 self.store.cleanup()
         except:
@@ -60,13 +64,16 @@ class VTPServer:
             await self.store.cleanup()
 
     async def start(self):
+        ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        ssl_context.load_cert_chain(certfile="server.crt", keyfile="server.key")
         server = await asyncio.start_server(
             self.handle_client,
             self.host,
-            self.port
+            self.port,
+            ssl=ssl_context
         )
 
-        print(f"VTP Server running on {self.host}:{self.port}")
+        logger.info(f"VTP Server running on {self.host}:{self.port}")
 
         async with server:
             await server.serve_forever()
